@@ -39,38 +39,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         }else {
             itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_normal2,parent,false);
         }
-        return new MyViewHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
-        final Word word = allWords.get(position);
-        holder.textViewId.setText(position + "");
-        holder.textViewEnglish.setText(word.getWord());
-        holder.textViewChinese.setText(word.getChineseMeaning());
-        //不希望驱动 下面的setOnCheckedChangeListener, 那么先设置为null, 显示数据,然后设置监听器
-        holder.aSwitchChineseInvisible.setOnCheckedChangeListener(null);
-        //底层数据决定是否显示
-        if(word.isChineseINvisible()) {
-            holder.textViewChinese.setVisibility(View.GONE);
-            holder.aSwitchChineseInvisible.setChecked(true);
-        }else {
-            holder.textViewChinese.setVisibility(View.VISIBLE);
-            holder.aSwitchChineseInvisible.setChecked(false);
-        }
+        final MyViewHolder holder = new MyViewHolder(itemView);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri uri = Uri.parse("https://m.youdao.com/dict?le=eng&q=" + word.getWord());
+                Uri uri = Uri.parse("https://m.youdao.com/dict?le=eng&q=" + holder.textViewEnglish.getText());
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(uri);
                 holder.itemView.getContext().startActivity(intent);
             }
         });
-
         holder.aSwitchChineseInvisible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Word word = (Word) holder.itemView.getTag(R.id.word_for_view_holder);
                 if (b) {
                     //修改视图
                     holder.textViewChinese.setVisibility(View.GONE);
@@ -84,6 +66,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 }
             }
         });
+
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
+        final Word word = allWords.get(position);
+        holder.itemView.setTag(R.id.word_for_view_holder,word);
+        holder.textViewId.setText(position + "");
+        holder.textViewEnglish.setText(word.getWord());
+        holder.textViewChinese.setText(word.getChineseMeaning());
+        //不希望驱动 下面的setOnCheckedChangeListener, 那么先设置为null, 显示数据,然后设置监听器
+//        holder.aSwitchChineseInvisible.setOnCheckedChangeListener(null);
+        //底层数据决定是否显示
+        if(word.isChineseINvisible()) {
+            holder.textViewChinese.setVisibility(View.GONE);
+            holder.aSwitchChineseInvisible.setChecked(true);
+        }else {
+            holder.textViewChinese.setVisibility(View.VISIBLE);
+            holder.aSwitchChineseInvisible.setChecked(false);
+        }
     }
 
     @Override

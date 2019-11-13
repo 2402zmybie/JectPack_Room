@@ -25,6 +25,10 @@ class WordRepository {
         return allWordsWithLiveData;
     }
 
+    LiveData<List<Word>> findWordsWithPatten(String patten) {
+        return wordDao.findWordsWithPatten("%" + patten + "%");
+    }
+
 
     void insertWords(Word... words) {
         new InsertAsyncTask(wordDao).execute(words);

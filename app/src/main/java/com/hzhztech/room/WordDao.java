@@ -30,4 +30,7 @@ public interface WordDao {
     @Query("SELECT * FROM WORD ORDER BY ID DESC")
     LiveData<List<Word>> getAllWordsWithLiveData();
 
+    @Query("SELECT * FROM word WHERE english_word LIKE :patten ORDER BY ID DESC")
+    LiveData<List<Word>> findWordsWithPatten(String patten);
+
 }
